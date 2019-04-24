@@ -7,22 +7,27 @@ namespace Lab4
 {
     class ThrowExceptionAfterOverParticipantCount : IDisposable
     {
-        private TimeSpan _barrierTimeSpan = TimeSpan.FromSeconds(10);
-        private const int BarrierParticipantCount = 2;
-        private IMyBarrier _myBarrier;
+        private TimeSpan barrierTimeSpan = TimeSpan.FromSeconds(10);
+        private const int barrierParticipantCount = 2;
+        private IMyBarrier myBarrier;
 
         public ThrowExceptionAfterOverParticipantCount()
         {
-            _myBarrier = new CMyBarrier(BarrierParticipantCount);
+            myBarrier = new CMyBarrier(barrierParticipantCount);
         }
 
         void SignalBarrier()
         {
             Console.WriteLine();
-            
-                _myBarrier.SignalAndWait(_barrierTimeSpan);
-            
-            
+            try
+            {
+                myBarrier.SignalAndWait(barrierTimeSpan);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Barrier count overflow");
+            }
+
         }
 
         public void Execute()
@@ -39,7 +44,7 @@ namespace Lab4
 
         public void Dispose()
         {
-            _myBarrier?.Dispose();
+            myBarrier?.Dispose();
         }
     }
 }

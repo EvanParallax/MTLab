@@ -8,12 +8,12 @@ namespace Lab4
     class BarrierReturnTrueWhenWaitingThreadsCountEqualsParticipantCount : IDisposable
     {
         private TimeSpan barrierTimeSpan = TimeSpan.FromSeconds(1000);
-        private const int BarrierParticipantCount = 3;
+        private const int barrierParticipantCount = 3;
         private IMyBarrier myBarrier;
 
         public BarrierReturnTrueWhenWaitingThreadsCountEqualsParticipantCount()
         {
-            myBarrier = new CMyBarrier(BarrierParticipantCount);
+            myBarrier = new CMyBarrier(barrierParticipantCount);
         }
 
         void SignalBarrier()
@@ -32,7 +32,7 @@ namespace Lab4
         public void Execute()
         {
             var list = new List<Task>();
-            for (int i = 0; i < BarrierParticipantCount; i++)
+            for (int i = 0; i < barrierParticipantCount; i++)
             {
                 int id = i;
                 var task = new Task(() =>

@@ -5,8 +5,9 @@ namespace Lab4
 {
     class CMyBarrier : IMyBarrier
     {
+        private readonly ManualResetEventSlim manualEvent;
 
-        private object sync;
+        private readonly object sync;
 
         public int ParticipantCount { get; private set; }
 
@@ -18,6 +19,7 @@ namespace Lab4
             }
 
             ParticipantCount = participantCount;
+            manualEvent = new ManualResetEventSlim(false);
             sync = new object();
         }
 
@@ -37,39 +39,25 @@ namespace Lab4
             }
 
             bool result = true;
-
-            Timer timer = null;
-            try
-            {
-                var callback = new TimerCallback((p) => result = false);
-
-                timer = new Timer(callback, 0, 0, (int)timeout.TotalMilliseconds);
-
+            bool countState;
                 lock (sync)
                 {
                     ParticipantCount--;
 
-                    if (ParticipantCount == 0)
-                        Monitor.PulseAll(sync);
-                    else
-                        Monitor.Wait(sync);
+                    countState = ParticipantCount == 0;
                 }
-                //lock (sync)
-                //{ 
-                //    ParticipantCount++;
-                //}
-            }
-            finally
-            {
-               timer?.Dispose();
-            }
+
+                if (countState)
+                    manualEvent.Set();
+                else
+                    manualEvent.Wait(timeout);
 
             return result;
         }
 
         public void Dispose()
         {
-
+            manualEvent.Dispose();
         }
     }
 }
