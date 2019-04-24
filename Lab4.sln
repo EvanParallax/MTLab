@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27428.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Individual task", "Lab4\Individual task.csproj", "{AE1C6E46-92D2-46D9-A9D3-9DCE46499EF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Section2 - misha and pchelki", "Section2 - misha and pchelki\Section2 - misha and pchelki.csproj", "{F2F35CD7-FCFB-424A-9EF2-A287A953CD5E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Task2BearAndBees", "Section2 - misha and pchelki\Task2BearAndBees.csproj", "{F2F35CD7-FCFB-424A-9EF2-A287A953CD5E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Task1 - provider and consumer", "Task1 - provider and consumer\Task1 - provider and consumer.csproj", "{D16ECB3E-EF03-436C-8C86-BF9A5DE201ED}"
 EndProject

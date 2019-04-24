@@ -11,7 +11,7 @@ namespace Task1___provider_and_consumer
     {
         static void Main(string[] args)
         {
-            IStorage<int> stor = new Storage<int>(5);
+            IBlockingQueue<int> stor = new BlockingQueue<int>(5);
 
             var readtask1 = Task.Factory.StartNew(() =>
             {

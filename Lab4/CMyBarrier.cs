@@ -5,9 +5,11 @@ namespace Lab4
 {
     class CMyBarrier : IMyBarrier
     {
-        private readonly ManualResetEventSlim manualEvent;
+        private readonly ManualResetEvent manualEvent;
 
         private readonly object sync;
+
+        private int maxCount;
 
         public int ParticipantCount { get; private set; }
 
@@ -18,21 +20,14 @@ namespace Lab4
                 throw new ArgumentException(nameof(participantCount));
             }
 
+            maxCount = participantCount;
             ParticipantCount = participantCount;
-            manualEvent = new ManualResetEventSlim(false);
+            manualEvent = new ManualResetEvent(false);
             sync = new object();
         }
 
         public bool SignalAndWait(TimeSpan timeout)
         {
-            lock (sync)
-            {
-                if (ParticipantCount == 0)
-                {
-                    throw new MyBarrierException();
-                }
-            }
-
             if (timeout <= TimeSpan.Zero)
             {
                 throw new ArgumentException(nameof(timeout));
@@ -40,18 +35,29 @@ namespace Lab4
 
             bool result = true;
             bool countState;
-                lock (sync)
-                {
-                    ParticipantCount--;
 
-                    countState = ParticipantCount == 0;
+            lock (sync)
+            {
+                if (ParticipantCount == 0)
+                {
+                    throw new MyBarrierException();
                 }
+                ParticipantCount--;
+
+                countState = ParticipantCount == 0;
+            }
 
                 if (countState)
                     manualEvent.Set();
                 else
-                    manualEvent.Wait(timeout);
+                    result = manualEvent.WaitOne(timeout);
 
+                lock (sync)
+                {
+                    ParticipantCount++;
+                    if (maxCount == ParticipantCount)
+                        manualEvent.Reset();
+                }
             return result;
         }
 

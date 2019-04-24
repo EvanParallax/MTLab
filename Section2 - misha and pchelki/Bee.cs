@@ -5,18 +5,20 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Section2___misha_and_pchelki
+namespace BearAndBees
 {
-    public class Reader<T>
-    {
-        public Reader(IStorage<T> stor)
+    public class Bee<T>
+    { 
+        public Bee(IStorage<T> stor, IAwakable bear, int id, T obj)
         {
             var task = Task.Factory.StartNew(() =>
             {
                 while (true)
                 {
-                    stor.Dequeue();
-                    Thread.Sleep(5000);
+                    stor.Enqueue(obj);
+                    if(stor.Check())
+                        bear.Awake();
+                    Thread.Sleep(1000);
                 }
             });
         }

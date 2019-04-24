@@ -7,7 +7,7 @@ namespace Lab4
 {
     class BarrierReturnTrueWhenWaitingThreadsCountEqualsParticipantCount : IDisposable
     {
-        private TimeSpan barrierTimeSpan = TimeSpan.FromSeconds(1000);
+        private TimeSpan barrierTimeSpan = TimeSpan.FromSeconds(1);
         private const int barrierParticipantCount = 3;
         private IMyBarrier myBarrier;
 

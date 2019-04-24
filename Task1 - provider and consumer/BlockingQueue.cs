@@ -1,74 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Task1___provider_and_consumer
 {
-    public interface IStorage<T> : IDisposable
+    public interface IBlockingQueue<T>
     {
         void Enqueue(T obj);
         T Dequeue();
     }
 
-    public class Storage<T> : IStorage<T>
+    public sealed class BlockingQueue<T> : IBlockingQueue<T>
     {
-        private readonly ManualResetEventSlim readEvent;
+        private readonly Queue<T> m_queue = new Queue<T>();
+        private readonly Mutex m_mutex = new Mutex();
+        private readonly Semaphore m_producerSemaphore;
+        private readonly Semaphore m_consumerSemaphore;
 
-        private readonly ManualResetEventSlim writeEvent;
-
-        private readonly int maxCapacity;
-
-        private readonly Queue<T> queue;
-
-        public Storage(int capacity)
+        public BlockingQueue(int capacity)
         {
-            maxCapacity = capacity;
-            queue = new Queue<T>();
-            readEvent = new ManualResetEventSlim(false);
-            writeEvent = new ManualResetEventSlim(true);
+            m_producerSemaphore = new Semaphore(capacity, capacity);
+            m_consumerSemaphore = new Semaphore(0, capacity);
         }
 
         public void Dispose()
         {
-            readEvent.Dispose();
-            writeEvent.Dispose();
+            m_producerSemaphore.Dispose();
+            m_consumerSemaphore.Dispose();
         }
 
         public void Enqueue(T obj)
         {
-            writeEvent.Wait();
+            m_producerSemaphore.WaitOne();
 
-            lock (queue)
+            m_mutex.WaitOne();
+            try
             {
-                if (queue.Count + 1 == maxCapacity)
-                {
-                    readEvent.Set();
-                    writeEvent.Reset();
-                }
-                Console.WriteLine("start writing to queue ");
-                queue.Enqueue(obj);
-                Console.WriteLine("end writing to queue ");
+                m_queue.Enqueue(obj);
+                Console.WriteLine("Enqueue" + obj);
             }
+            finally
+            {
+                m_mutex.ReleaseMutex();
+            }
+            m_consumerSemaphore.Release();
         }
 
         public T Dequeue()
         {
-            readEvent.Wait();
 
-            lock (queue)
+            m_consumerSemaphore.WaitOne();
+
+
+            T value;
+            m_mutex.WaitOne();
+            try
             {
-                Console.WriteLine("start reading from queue ");
-                if (queue.Count == 1)
-                {
-                    readEvent.Reset();
-                    writeEvent.Set();
-                }
-                Console.WriteLine("end reading from queue ");
-                return queue.Dequeue();
+                value = m_queue.Dequeue();
+                Console.WriteLine("Dequeue" + value);
             }
+            finally
+            {
+                m_mutex.ReleaseMutex();
+            }
+
+            m_producerSemaphore.Release();
+            return value;
         }
     }
 }

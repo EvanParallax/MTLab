@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Section2___misha_and_pchelki
+namespace BearAndBees
 {
     class Program
     {
@@ -12,10 +12,10 @@ namespace Section2___misha_and_pchelki
         {
             using (Storage<int> stor = new Storage<int>(5))
             {
-                Reader<int> reader = new Reader<int>(stor);
-                Writer<int> writer1 = new Writer<int>(stor, 1, 1);
-                Writer<int> writer2 = new Writer<int>(stor, 2, 2);
-                Writer<int> writer3 = new Writer<int>(stor, 3, 3);
+                Bear<int> bear = new Bear<int>(stor);
+                Bee<int> writer1 = new Bee<int>(stor, bear,1, 1);
+                Bee<int> writer2 = new Bee<int>(stor, bear, 2, 2);
+                Bee<int> writer3 = new Bee<int>(stor, bear,3, 3);
                 Console.Read();
             }
                 
