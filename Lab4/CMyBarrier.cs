@@ -46,7 +46,7 @@ namespace Lab4
 
                 countState = ParticipantCount == 0;
             }
-
+            var bar = new Barrier(3);
                 if (countState)
                     manualEvent.Set();
                 else

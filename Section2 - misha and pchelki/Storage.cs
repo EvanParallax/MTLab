@@ -30,7 +30,7 @@ namespace BearAndBees
         public bool Check()
         {
             lock (queue)
-                return queue.Count == maxCapacity;
+                return queue.Count >= maxCapacity;
         }
 
         public void Dispose()
@@ -42,15 +42,18 @@ namespace BearAndBees
         {
             writeEvent.WaitOne();
 
+            Thread.Sleep(1000);
+
             lock (queue)
             {
-                if (queue.Count + 1 == maxCapacity)
+                if (queue.Count + 1 >= maxCapacity)
                 {
                     writeEvent.Reset();
                 }
                 Console.WriteLine("pushing honey");
                 queue.Enqueue(obj);
             }
+            Thread.Sleep(1000);
         }
 
         public List<T> Dequeue()
