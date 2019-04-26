@@ -9,8 +9,6 @@ namespace Lab4
 
         private readonly object sync;
 
-        private int maxCount;
-
         public int ParticipantCount { get; private set; }
 
         public CMyBarrier(int participantCount)
@@ -20,7 +18,6 @@ namespace Lab4
                 throw new ArgumentException(nameof(participantCount));
             }
 
-            maxCount = participantCount;
             ParticipantCount = participantCount;
             manualEvent = new ManualResetEvent(false);
             sync = new object();
@@ -46,18 +43,12 @@ namespace Lab4
 
                 countState = ParticipantCount == 0;
             }
-            var bar = new Barrier(3);
+
                 if (countState)
                     manualEvent.Set();
                 else
                     result = manualEvent.WaitOne(timeout);
 
-                lock (sync)
-                {
-                    ParticipantCount++;
-                    if (maxCount == ParticipantCount)
-                        manualEvent.Reset();
-                }
             return result;
         }
 

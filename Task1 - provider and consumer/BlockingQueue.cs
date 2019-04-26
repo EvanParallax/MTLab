@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Task1___provider_and_consumer
 {
-    public interface IBlockingQueue<T>
+    public interface IBlockingQueue<T> : IDisposable
     {
         void Enqueue(T obj);
         T Dequeue();
@@ -13,7 +13,7 @@ namespace Task1___provider_and_consumer
     public sealed class BlockingQueue<T> : IBlockingQueue<T>
     {
         private readonly Queue<T> m_queue = new Queue<T>();
-        private readonly Mutex m_mutex = new Mutex();
+        private readonly object sync = new object();
         private readonly Semaphore m_producerSemaphore;
         private readonly Semaphore m_consumerSemaphore;
 
@@ -33,16 +33,12 @@ namespace Task1___provider_and_consumer
         {
             m_producerSemaphore.WaitOne();
 
-            m_mutex.WaitOne();
-            try
+            lock (sync)
             {
                 m_queue.Enqueue(obj);
                 Console.WriteLine("Enqueue" + obj);
             }
-            finally
-            {
-                m_mutex.ReleaseMutex();
-            }
+            
             m_consumerSemaphore.Release();
         }
 
@@ -53,15 +49,10 @@ namespace Task1___provider_and_consumer
 
 
             T value;
-            m_mutex.WaitOne();
-            try
+            lock (sync)
             {
                 value = m_queue.Dequeue();
                 Console.WriteLine("Dequeue" + value);
-            }
-            finally
-            {
-                m_mutex.ReleaseMutex();
             }
 
             m_producerSemaphore.Release();

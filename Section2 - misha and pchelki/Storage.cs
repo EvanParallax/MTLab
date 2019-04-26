@@ -6,7 +6,7 @@ namespace BearAndBees
 {
     public interface IStorage<T> : IDisposable
     {
-        bool Check();
+        bool IsFull();
         void Enqueue(T obj);
         List<T> Dequeue();
     }
@@ -27,7 +27,7 @@ namespace BearAndBees
             writeEvent = new ManualResetEvent(true);
         }
 
-        public bool Check()
+        public bool IsFull()
         {
             lock (queue)
                 return queue.Count >= maxCapacity;
@@ -42,18 +42,17 @@ namespace BearAndBees
         {
             writeEvent.WaitOne();
 
-            Thread.Sleep(1000);
-
             lock (queue)
             {
                 if (queue.Count + 1 >= maxCapacity)
                 {
                     writeEvent.Reset();
+                    if (queue.Count + 1 > maxCapacity)
+                        return;
                 }
                 Console.WriteLine("pushing honey");
                 queue.Enqueue(obj);
             }
-            Thread.Sleep(1000);
         }
 
         public List<T> Dequeue()

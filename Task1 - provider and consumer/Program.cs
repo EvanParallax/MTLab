@@ -11,44 +11,47 @@ namespace Task1___provider_and_consumer
     {
         static void Main(string[] args)
         {
-            IBlockingQueue<int> stor = new BlockingQueue<int>(5);
-
-            var readtask1 = Task.Factory.StartNew(() =>
+            using (IBlockingQueue<int> stor = new BlockingQueue<int>(10))
             {
-                while (true)
+                var readtask1 = Task.Factory.StartNew(() =>
                 {
-                    stor.Dequeue();
-                    Thread.Sleep(1000);
-                }
-            });
+                    while (true)
+                    {
+                        stor.Dequeue();
+                        Thread.Sleep(1000);
+                    }
+                });
 
-            var readtask2 = Task.Factory.StartNew(() =>
-            {
-                while (true)
+                var readtask2 = Task.Factory.StartNew(() =>
                 {
-                    stor.Dequeue();
-                    Thread.Sleep(1000);
-                }
-            });
+                    while (true)
+                    {
+                        stor.Dequeue();
+                        Thread.Sleep(1000);
+                    }
+                });
 
-            var writetask1 = Task.Factory.StartNew(() =>
-            {
-                while (true)
+                var writetask1 = Task.Factory.StartNew(() =>
                 {
-                    stor.Enqueue(1);
-                    Thread.Sleep(1000);
-                }
-            });
+                    while (true)
+                    {
+                        stor.Enqueue(1);
+                        Thread.Sleep(1000);
+                    }
+                });
 
-            var writetask2 = Task.Factory.StartNew(() =>
-            {
-                while (true)
+                var writetask2 = Task.Factory.StartNew(() =>
                 {
-                    stor.Enqueue(2);
-                    Thread.Sleep(1000);
-                }
-            });
-            Console.Read();
+                    while (true)
+                    {
+                        stor.Enqueue(2);
+                        Thread.Sleep(1000);
+                    }
+                });
+                Console.Read();
+            }
+
+                
         }
     }
 }

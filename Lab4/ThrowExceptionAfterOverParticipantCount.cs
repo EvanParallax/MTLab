@@ -7,7 +7,7 @@ namespace Lab4
 {
     class ThrowExceptionAfterOverParticipantCount : IDisposable
     {
-        private TimeSpan barrierTimeSpan = TimeSpan.FromSeconds(10);
+        private TimeSpan barrierTimeSpan = TimeSpan.FromSeconds(1);
         private const int barrierParticipantCount = 2;
         private IMyBarrier myBarrier;
 

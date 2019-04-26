@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace BearAndBees
 {
     public class Bee<T>
-    {
-        private static object sync = new object();
+    { 
+        private static readonly object sync = new object();
 
         public Bee(IStorage<T> stor, IAwakable bear, int id, T obj)
         {
@@ -17,12 +17,13 @@ namespace BearAndBees
             {
                 while (true)
                 {
+                    stor.Enqueue(obj);
                     lock (sync)
                     {
-                        stor.Enqueue(obj);
-                        if (stor.Check())
+                        if (stor.IsFull())
                             bear.Awake();
                     }
+
                     Thread.Sleep(1000);
                 }
             });

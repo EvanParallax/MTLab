@@ -8,7 +8,7 @@ namespace Lab4
         {
             using (var test1 = new ThrowExceptionAfterOverParticipantCount())
             {
-               // test1.Execute();
+               test1.Execute();
             }
 
             using (var test2 = new BarrierReturnTrueWhenWaitingThreadsCountEqualsParticipantCount())
